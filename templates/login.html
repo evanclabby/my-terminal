@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TERMINAL — Login</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#080a0d;color:#e2e6ed;font-family:'Courier New',monospace;min-height:100vh;display:flex;align-items:center;justify-content:center;background-image:radial-gradient(ellipse at 20% 50%,rgba(245,166,35,0.04) 0%,transparent 60%),radial-gradient(ellipse at 80% 20%,rgba(0,200,122,0.03) 0%,transparent 50%)}
+.box{width:380px;padding:52px 44px;background:rgba(16,20,26,0.95);border:1px solid rgba(245,166,35,0.3);position:relative}
+.box::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,#f5a623,transparent)}
+.logo-row{display:flex;align-items:center;gap:10px;margin-bottom:4px}
+.logo{font-size:24px;font-weight:700;color:#f5a623;letter-spacing:4px}
+.logo-dot{width:6px;height:6px;background:#00c87a;border-radius:50%;animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
+.tagline{font-size:10px;color:#4a5568;letter-spacing:2px;margin-bottom:40px;text-transform:uppercase}
+label{font-size:10px;color:#6b7280;letter-spacing:1.5px;display:block;margin-bottom:8px;text-transform:uppercase}
+input[type="password"]{width:100%;background:#0d1117;border:1px solid rgba(255,255,255,0.08);color:#e2e6ed;font-family:'Courier New',monospace;font-size:15px;padding:12px 14px;outline:none;margin-bottom:6px;transition:border-color 0.2s}
+input[type="password"]:focus{border-color:#f5a623}
+.error{font-size:11px;color:#f04040;margin-bottom:12px;padding:6px 10px;background:rgba(240,64,64,0.08);border-left:2px solid #f04040}
+button{width:100%;background:#f5a623;color:#080a0d;border:none;font-family:'Courier New',monospace;font-size:12px;font-weight:700;letter-spacing:2px;padding:13px;cursor:pointer;margin-top:10px;transition:all 0.2s;text-transform:uppercase}
+button:hover{background:#e09510;letter-spacing:3px}
+.footer{margin-top:28px;font-size:9px;color:#2d3748;text-align:center;letter-spacing:1px}
+</style>
+</head>
+<body>
+<div class="box">
+  <div class="logo-row"><span class="logo">TERMINAL</span><span class="logo-dot"></span></div>
+  <div class="tagline">Personal Market Intelligence</div>
+  <form method="POST">
+    <label>Access Code</label>
+    {% if error %}<div class="error">{{ error }}</div>{% endif %}
+    <input type="password" name="password" autofocus placeholder="••••••••">
+    <button type="submit">Enter Terminal →</button>
+  </form>
+  <div class="footer">PRIVATE · SECURE · PERSONAL</div>
+</div>
+</body>
+</html>
