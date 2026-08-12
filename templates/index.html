@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TERMINAL</title>
+<link rel="stylesheet" href="/static/css/terminal.css">
+</head>
+<body>
+
+<div class="shell">
+
+  <!-- TOP BAR -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <div class="logo-mark"><span class="logo-t">T</span></div>
+      <span class="logo-text">TERMINAL</span>
+      <div class="topbar-divider"></div>
+      <span class="clock" id="clock"></span>
+    </div>
+    <div class="topbar-right">
+      <div class="status-group">
+        <span class="status-dot" id="status-dot"></span>
+        <span class="status-label" id="status-label">LOADING</span>
+      </div>
+      <div class="topbar-divider"></div>
+      <span class="mkt-badge" id="mkt-badge">MARKET</span>
+      <div class="topbar-divider"></div>
+      <a href="/logout" class="logout-link">LOGOUT</a>
+    </div>
+  </header>
+
+  <!-- TICKER -->
+  <div class="ticker-strip">
+    <div class="ticker-tag">LIVE</div>
+    <div class="ticker-viewport">
+      <div class="ticker-track">
+        <div class="ticker-items" id="ticker-a"></div>
+        <div class="ticker-items" id="ticker-b"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NAV -->
+  <nav class="nav-bar">
+    <button class="nav-btn active" data-tab="overview">
+      <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path d="M0 0h7v7H0zM9 0h7v7H9zM0 9h7v7H0zM9 9h7v7H9z"/></svg>
+      Overview
+    </button>
+    <button class="nav-btn" data-tab="portfolio">
+      <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path d="M2 2h12v2H2zM1 6h14v8H1z"/></svg>
+      Portfolio
+    </button>
+    <button class="nav-btn" data-tab="watchlist">
+      <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1L10 6h5l-4 3 1.5 5L8 11l-4.5 3L5 9 1 6h5z"/></svg>
+      Watchlist
+    </button>
+    <button class="nav-btn" data-tab="news">
+      <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path d="M1 2h14v1H1zM1 5h14v1H1zM1 8h8v1H1zM1 11h8v1H1z"/></svg>
+      News
+    </button>
+    <button class="nav-btn" data-tab="screener">
+      <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path d="M0 3h16v2L10 10v5l-4-2V10L0 5z"/></svg>
+      Screener
+    </button>
+    <button class="nav-btn" data-tab="notes">
+      <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path d="M2 1h9l3 3v11H2V1zm9 0v3h3"/></svg>
+      Notes
+    </button>
+    <button class="nav-btn" data-tab="alerts">
+      <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1a5 5 0 00-5 5v3l-2 2v1h14v-1l-2-2V6a5 5 0 00-5-5zm-1 13a1 1 0 002 0z"/></svg>
+      Alerts
+    </button>
+    <div class="nav-spacer"></div>
+    <span class="refresh-label" id="refresh-label"></span>
+  </nav>
+
+  <!-- BOTTOM INDEX BAR -->
+  <div class="index-strip" id="index-strip"></div>
+
+  <!-- MAIN CONTENT -->
+  <main class="main-area">
+
+    <!-- ── OVERVIEW ──────────────────────────────────────────────────────── -->
+    <div class="tab-panel active" id="tab-overview">
+      <div class="overview-layout">
+
+        <!-- Watchlist column -->
+        <section class="panel" id="ov-watchlist">
+          <div class="panel-head">
+            <span class="panel-title">Watchlist</span>
+            <button class="ghost-btn" id="ov-add-btn">+ Add</button>
+          </div>
+          <div class="add-row" id="ov-add-row" style="display:none">
+            <input type="text" class="add-input" id="ov-add-input" placeholder="Ticker…" maxlength="10">
+            <button class="accent-btn" id="ov-add-submit">Add</button>
+          </div>
+          <div class="col-head grid-wl-sm">
+            <span>Symbol</span><span class="r">Price</span><span class="r">Chg%</span>
+          </div>
+          <div class="scroll-area" id="ov-wl-body"></div>
+        </section>
+
+        <!-- Portfolio summary column -->
+        <section class="panel" id="ov-portfolio">
+          <div class="panel-head"><span class="panel-title">Portfolio P&amp;L</span></div>
+          <div class="kpi-grid" id="ov-kpis"></div>
+          <div class="col-head grid-port-sm" style="margin-top:10px">
+            <span>Holding</span><span class="r">Value</span><span class="r">Day</span><span class="r">Total</span>
+          </div>
+          <div class="scroll-area" id="ov-port-body"></div>
+        </section>
+
+        <!-- News column -->
+        <section class="panel news-col" id="ov-news">
+          <div class="panel-head"><span class="panel-title">News Feed</span></div>
+          <div class="filter-row">
+            <button class="chip active" data-src="ALL">All</button>
+            <button class="chip" data-src="WSJ">WSJ</button>
+            <button class="chip" data-src="BARRONS">Barron's</button>
+            <button class="chip" data-src="MARKETWATCH">MarketWatch</button>
+            <button class="chip" data-src="REUTERS">Reuters</button>
+            <button class="chip" data-src="FT">FT</button>
+            <button class="chip" data-src="CNBC">CNBC</button>
+          </div>
+          <div class="scroll-area" id="ov-news-body"></div>
+        </section>
+
+      </div>
+    </div>
+
+    <!-- ── PORTFOLIO ─────────────────────────────────────────────────────── -->
+    <div class="tab-panel" id="tab-portfolio">
+      <div class="port-layout">
+
+        <!-- KPIs -->
+        <div class="kpi-grid wide" id="port-kpis"></div>
+
+        <!-- Summary table + pie -->
+        <div class="port-top-row">
+          <section class="panel flex-1">
+            <div class="panel-head">
+              <span class="panel-title">Holdings</span>
+              <button class="ghost-btn" id="port-add-btn">+ Add holding</button>
+            </div>
+            <div class="add-row" id="port-add-row" style="display:none">
+              <input type="text" class="add-input" id="port-sym" placeholder="Symbol" maxlength="10">
+              <input type="number" class="add-input sm" id="port-shares" placeholder="Shares" step="0.001">
+              <input type="number" class="add-input sm" id="port-cost" placeholder="Avg cost" step="0.01">
+              <button class="accent-btn" id="port-add-submit">Add</button>
+            </div>
+            <div class="col-head grid-port-full">
+              <span>Name</span><span>Ticker</span><span>Sector</span>
+              <span class="r">Shares</span><span class="r">Price</span>
+              <span class="r">Day P&L</span><span class="r">Total P&L%</span>
+              <span class="r">Value</span><span class="r">Alloc%</span><span></span>
+            </div>
+            <div id="port-holdings-body"></div>
+          </section>
+
+          <section class="panel port-chart-panel">
+            <div class="panel-head"><span class="panel-title">Allocation</span></div>
+            <div class="chart-wrap">
+              <canvas id="pie-canvas" width="200" height="200"></canvas>
+            </div>
+            <div id="pie-legend"></div>
+          </section>
+        </div>
+
+        <!-- Dividends -->
+        <section class="panel">
+          <div class="panel-head"><span class="panel-title">Dividend Income</span></div>
+          <div class="div-layout">
+            <div class="div-summary">
+              <div class="div-total-label">Est. Annual Income</div>
+              <div class="div-total-val" id="div-total">—</div>
+              <div class="div-monthly-val" id="div-monthly"></div>
+            </div>
+            <div id="div-breakdown" class="div-breakdown"></div>
+          </div>
+        </section>
+
+      </div>
+    </div>
+
+    <!-- ── WATCHLIST ─────────────────────────────────────────────────────── -->
+    <div class="tab-panel" id="tab-watchlist">
+      <section class="panel full-panel">
+        <div class="panel-head">
+          <span class="panel-title">Watchlist — Full View</span>
+          <button class="ghost-btn" id="wl-add-btn">+ Add symbol</button>
+        </div>
+        <div class="add-row" id="wl-add-row" style="display:none">
+          <input type="text" class="add-input" id="wl-add-input" placeholder="Ticker…" maxlength="10">
+          <button class="accent-btn" id="wl-add-submit">Add</button>
+        </div>
+        <div class="col-head grid-wl-full">
+          <span>Symbol</span><span>Name</span><span>Sector</span>
+          <span class="r">Price</span><span class="r">Change</span><span class="r">Chg%</span>
+          <span class="r">52W High</span><span class="r">52W Low</span><span></span>
+        </div>
+        <div class="scroll-area-full" id="wl-full-body"></div>
+      </section>
+    </div>
+
+    <!-- ── NEWS ─────────────────────────────────────────────────────────── -->
+    <div class="tab-panel" id="tab-news">
+      <section class="panel full-panel">
+        <div class="panel-head"><span class="panel-title">News — Full Feed</span></div>
+        <div class="filter-row padded">
+          <button class="chip active" data-src="ALL" data-tgt="news-full-body">All</button>
+          <button class="chip" data-src="WSJ" data-tgt="news-full-body">WSJ</button>
+          <button class="chip" data-src="BARRONS" data-tgt="news-full-body">Barron's</button>
+          <button class="chip" data-src="MARKETWATCH" data-tgt="news-full-body">MarketWatch</button>
+          <button class="chip" data-src="REUTERS" data-tgt="news-full-body">Reuters</button>
+          <button class="chip" data-src="FT" data-tgt="news-full-body">FT</button>
+          <button class="chip" data-src="CNBC" data-tgt="news-full-body">CNBC</button>
+          <button class="chip" data-src="BLOOMBERG" data-tgt="news-full-body">Bloomberg</button>
+          <button class="chip" data-src="YAHOO" data-tgt="news-full-body">Yahoo</button>
+          <button class="chip" data-src="SEEKINGALPHA" data-tgt="news-full-body">Seeking Alpha</button>
+          <button class="chip" data-src="MOTLEYFOOL" data-tgt="news-full-body">Motley Fool</button>
+          <button class="chip" data-src="AP" data-tgt="news-full-body">AP</button>
+        </div>
+        <div class="news-grid-area" id="news-full-body"></div>
+      </section>
+    </div>
+
+    <!-- ── SCREENER ──────────────────────────────────────────────────────── -->
+    <div class="tab-panel" id="tab-screener">
+      <section class="panel full-panel">
+        <div class="panel-head"><span class="panel-title">Stock Screener</span><span class="panel-sub">Click any row to view full details</span></div>
+        <div class="screener-controls">
+          <div class="screener-group">
+            <label class="sc-label">Symbols to screen</label>
+            <div class="sc-hint">Enter tickers separated by commas, or screen your watchlist / portfolio</div>
+            <div class="sc-row">
+              <input type="text" class="add-input wide" id="sc-input" placeholder="AAPL, MSFT, NVDA, ...">
+              <button class="ghost-btn sm" id="sc-use-watchlist">Use Watchlist</button>
+              <button class="ghost-btn sm" id="sc-use-portfolio">Use Portfolio</button>
+              <button class="accent-btn" id="sc-run">Screen →</button>
+            </div>
+          </div>
+        </div>
+        <div class="sc-status" id="sc-status"></div>
+        <div class="col-head grid-screener" id="sc-col-head" style="display:none">
+          <span>Symbol</span><span>Name</span><span>Sector</span>
+          <span class="r">Price</span><span class="r">P/E</span><span class="r">Fwd P/E</span>
+          <span class="r">Mkt Cap</span><span class="r">Beta</span>
+          <span class="r">Gross Mgn</span><span class="r">ROE</span>
+          <span class="r">Div Yield</span><span class="r">Target</span>
+        </div>
+        <div id="sc-results"></div>
+      </section>
+    </div>
+
+    <!-- ── NOTES ─────────────────────────────────────────────────────────── -->
+    <div class="tab-panel" id="tab-notes">
+      <section class="panel full-panel notes-panel">
+        <div class="panel-head">
+          <span class="panel-title">Investment Notes</span>
+          <div class="notes-actions">
+            <span class="notes-saved" id="notes-saved"></span>
+            <button class="accent-btn sm" id="notes-save-btn">Save</button>
+          </div>
+        </div>
+        <div class="notes-hint">Your private scratchpad — track thesis, ideas, reminders.</div>
+        <textarea class="notes-area" id="notes-area" placeholder="Start writing your investment notes here…&#10;&#10;Ideas, thesis statements, reminders, stock analysis…&#10;Saved automatically to your server."></textarea>
+      </section>
+    </div>
+
+    <!-- ── ALERTS ────────────────────────────────────────────────────────── -->
+    <div class="tab-panel" id="tab-alerts">
+      <section class="panel full-panel">
+        <div class="panel-head"><span class="panel-title">Price Alerts</span></div>
+        <div class="alerts-add-row">
+          <input type="text" class="add-input" id="alert-sym" placeholder="Symbol" maxlength="10">
+          <select class="add-input sm" id="alert-cond">
+            <option value="above">Price above</option>
+            <option value="below">Price below</option>
+          </select>
+          <input type="number" class="add-input sm" id="alert-price" placeholder="$ Target" step="0.01">
+          <button class="accent-btn" id="alert-add-btn">Set Alert</button>
+        </div>
+        <div class="alerts-hint">Alerts are checked each time you load the page. Triggered alerts turn red.</div>
+        <div class="col-head grid-alerts">
+          <span>Symbol</span><span>Condition</span><span class="r">Target Price</span><span class="r">Current Price</span><span class="r">Status</span><span></span>
+        </div>
+        <div id="alerts-body"></div>
+      </section>
+    </div>
+
+  </main>
+
+</div>
+
+<!-- ── STOCK DETAIL MODAL ──────────────────────────────────────────────────── -->
+<div id="modal-bg" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.82);z-index:1000;overflow-y:auto;padding:24px 16px;">
+  <div class="modal-box">
+
+    <div class="modal-header">
+      <div class="modal-id">
+        <div class="modal-sym" id="m-sym"></div>
+        <div class="modal-name" id="m-name"></div>
+        <div class="modal-sector" id="m-sector"></div>
+      </div>
+      <div class="modal-price-block">
+        <div class="modal-price" id="m-price"></div>
+        <div class="modal-chg" id="m-chg"></div>
+        <div class="modal-range" id="m-range"></div>
+      </div>
+      <button class="modal-close-btn" id="modal-close">✕</button>
+    </div>
+
+    <div class="modal-body" id="modal-body">
+      <div class="modal-loading" id="modal-loading">Fetching data…</div>
+      <div id="modal-content" style="display:none">
+
+        <div class="mgroup">
+          <div class="mgroup-title">Valuation</div>
+          <div class="mcards">
+            <div class="mcard"><div class="mcard-l">P/E (TTM)</div><div class="mcard-v" id="md-pe"></div></div>
+            <div class="mcard"><div class="mcard-l">Forward P/E</div><div class="mcard-v" id="md-fpe"></div></div>
+            <div class="mcard"><div class="mcard-l">Market Cap</div><div class="mcard-v" id="md-mcap"></div></div>
+            <div class="mcard"><div class="mcard-l">EPS (TTM)</div><div class="mcard-v" id="md-eps"></div></div>
+            <div class="mcard"><div class="mcard-l">Forward EPS</div><div class="mcard-v" id="md-feps"></div></div>
+            <div class="mcard"><div class="mcard-l">PEG Ratio</div><div class="mcard-v" id="md-peg"></div></div>
+            <div class="mcard"><div class="mcard-l">Price/Book</div><div class="mcard-v" id="md-pb"></div></div>
+            <div class="mcard"><div class="mcard-l">EV/EBITDA</div><div class="mcard-v" id="md-evebitda"></div></div>
+          </div>
+        </div>
+
+        <div class="mgroup">
+          <div class="mgroup-title">Analyst Consensus</div>
+          <div class="mcards">
+            <div class="mcard"><div class="mcard-l">1Y Target</div><div class="mcard-v" id="md-target"></div></div>
+            <div class="mcard"><div class="mcard-l">Recommendation</div><div class="mcard-v" id="md-rec"></div></div>
+            <div class="mcard"><div class="mcard-l">Analysts</div><div class="mcard-v" id="md-nanalysts"></div></div>
+            <div class="mcard"><div class="mcard-l">Beta</div><div class="mcard-v" id="md-beta"></div></div>
+            <div class="mcard"><div class="mcard-l">52W High</div><div class="mcard-v" id="md-52h"></div></div>
+            <div class="mcard"><div class="mcard-l">52W Low</div><div class="mcard-v" id="md-52l"></div></div>
+            <div class="mcard"><div class="mcard-l">Day High</div><div class="mcard-v" id="md-dh"></div></div>
+            <div class="mcard"><div class="mcard-l">Day Low</div><div class="mcard-v" id="md-dl"></div></div>
+          </div>
+        </div>
+
+        <div class="mgroup">
+          <div class="mgroup-title">Profitability &amp; Returns</div>
+          <div class="mcards">
+            <div class="mcard"><div class="mcard-l">Gross Margin</div><div class="mcard-v" id="md-gm"></div></div>
+            <div class="mcard"><div class="mcard-l">Op Margin</div><div class="mcard-v" id="md-om"></div></div>
+            <div class="mcard"><div class="mcard-l">Net Margin</div><div class="mcard-v" id="md-nm"></div></div>
+            <div class="mcard"><div class="mcard-l">ROE</div><div class="mcard-v" id="md-roe"></div></div>
+            <div class="mcard"><div class="mcard-l">ROA</div><div class="mcard-v" id="md-roa"></div></div>
+            <div class="mcard"><div class="mcard-l">Revenue Growth</div><div class="mcard-v" id="md-revg"></div></div>
+            <div class="mcard"><div class="mcard-l">Earnings Growth</div><div class="mcard-v" id="md-earng"></div></div>
+          </div>
+        </div>
+
+        <div class="mgroup">
+          <div class="mgroup-title">Balance Sheet &amp; Risk</div>
+          <div class="mcards">
+            <div class="mcard"><div class="mcard-l">Debt/Equity</div><div class="mcard-v" id="md-de"></div></div>
+            <div class="mcard"><div class="mcard-l">Current Ratio</div><div class="mcard-v" id="md-cr"></div></div>
+            <div class="mcard"><div class="mcard-l">Quick Ratio</div><div class="mcard-v" id="md-qr"></div></div>
+          </div>
+        </div>
+
+        <div class="mgroup">
+          <div class="mgroup-title">Dividends</div>
+          <div class="mcards">
+            <div class="mcard"><div class="mcard-l">Annual Div</div><div class="mcard-v" id="md-divrate"></div></div>
+            <div class="mcard"><div class="mcard-l">Yield</div><div class="mcard-v" id="md-divyield"></div></div>
+            <div class="mcard"><div class="mcard-l">Payout Ratio</div><div class="mcard-v" id="md-payout"></div></div>
+            <div class="mcard"><div class="mcard-l">5Y Div CAGR</div><div class="mcard-v" id="md-dg5"></div></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="/static/js/terminal.js"></script>
+</body>
+</html>
